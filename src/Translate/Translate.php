@@ -7,9 +7,14 @@ use Goatgames\Sdk\Utils\Helper;
 class Translate
 {
     // 加密key
-    const PRIVATE_KEY = '';
+    protected $private_key;
     //请求地址
-    const REQ_URL = '';
+    protected $req_url;
+
+    public function __construct($req_url, $key) {
+        $this->req_url = $req_url;
+        $this->private_key = $key;
+    }
 
     public function translate($data)
     {
@@ -21,7 +26,7 @@ class Translate
             $data['gameId'],
             $timestamp,
             $data['requestId'],
-            self::PRIVATE_KEY,
+            $this->private_key,
         ];
         $sign = Helper::genSign($signData);
 
@@ -41,6 +46,6 @@ class Translate
             'sign:'.$sign,
         ];
 
-        return Helper::sendPostRequest(self::REQ_URL, $params, $header, 5, 'json');
+        return Helper::sendPostRequest($this->req_url, $params, $header, 5, 'json');
     }
 }
