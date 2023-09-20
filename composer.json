@@ -1,0 +1,21 @@
+{
+  "name": "goatgames/sdk",
+  "description": "goatgames服务端sdk",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "mason",
+      "email": "wuyuli@goatgames.com"
+    }
+  ],
+  "require": {
+    "php": "^7.0",
+    "guzzlehttp/guzzle": "^6.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "Goatgames\\Sdk\\": "src/"
+    }
+  }
+}
