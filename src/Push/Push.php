@@ -8,23 +8,24 @@ class Push
 {
 
     // 加密key
-    const PRIVATE_KEY = '';
+    const PRIVATE_KEY = '30861e222826ce126ec8a6d5e22a56ad';
     //请求地址
-    const REQ_URL = '';
+    const REQ_URL = 'https://msgsandbox.cdxlwl.cn/api/v2/sendMsg';
 
-    public function genSign($gameId, $requestId, $timestamp)
-    {
-        $signStr = implode("", [$gameId, $timestamp, $requestId, self::PRIVATE_KEY]);
-        return md5($signStr);
-    }
 
     public function sendPush($pushData)
     {
-        // 获取毫秒
+        // 获取时间戳
         $timestamp = time();
 
         // 获取签名
-        $sign = $this->genSign($pushData['gameId'], $pushData['requestId'], $timestamp);
+        $signData = [
+            $pushData['gameId'],
+            $timestamp,
+            $pushData['requestId'],
+            self::PRIVATE_KEY,
+        ];
+        $sign = Helper::genSign($signData);
 
         // 参数数据
         $data = [
