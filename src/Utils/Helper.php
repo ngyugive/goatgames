@@ -4,7 +4,57 @@ namespace Goatgames\Sdk\Utils;
 
 class Helper
 {
-    public static function sendPostRequest($url, $params = [], $headers = [], $timeout = 5, $type = "form")
+    public static function sendGetRequest($url, $params = [], $headers = [], $timeout = 5)
+    {
+        $responseHeaders = [];
+
+        if (! empty($params)) {
+            $url .= '?' . http_build_query($params);
+        }
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => $timeout,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_HEADERFUNCTION => function ($curl, $header) use (&$responseHeaders) {
+                $len = strlen($header);
+                $header = explode(':', $header, 2);
+                if (count($header) < 2) {
+                    return $len;
+                }
+
+                $responseHeaders[strtolower(trim($header[0]))][] = trim($header[1]);
+                return $len;
+            }
+        ]);
+
+        if (!$result = curl_exec($curl)) {
+            trigger_error(curl_error($curl));
+        }
+
+        // 获取状态码
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        // 关闭连接
+        curl_close($curl);
+
+        return [
+            'response_headers' => array_merge($responseHeaders, [
+                'http_code' => $httpCode
+            ]),
+            'response_body' => $result
+        ];
+    }
+
+    public static function sendPostRequest($url, $params = [], $headers = [], $type = "form", $timeout = 5)
     {
         $responseHeaders = [];
 
@@ -61,6 +111,13 @@ class Helper
     public static function genSign($signData)
     {
         $signStr = implode("", $signData);
+        return md5($signStr);
+    }
+
+    public static function getSign($signData, $key)
+    {
+        ksort($signData);
+        $signStr = http_build_query($signData) . $key;
         return md5($signStr);
     }
 }

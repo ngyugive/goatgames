@@ -11,7 +11,8 @@ class RiskControl
     //请求地址
     protected $req_url;
 
-    public function __construct($req_url, $key) {
+    public function __construct($req_url, $key)
+    {
         $this->req_url = $req_url;
         $this->private_key = $key;
     }
@@ -46,6 +47,6 @@ class RiskControl
             'roleId:'.$data['roleId'],
         ];
 
-        return Helper::sendPostRequest($this->req_url, $params, $header, 5, 'json');
+        return Helper::sendPostRequest($this->req_url, $params, $header, 'json');
     }
 }

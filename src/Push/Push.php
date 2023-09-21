@@ -12,7 +12,8 @@ class Push
     //请求地址
     protected $req_url;
 
-    public function __construct($req_url, $key) {
+    public function __construct($req_url, $key)
+    {
         $this->req_url = $req_url;
         $this->private_key = $key;
     }
